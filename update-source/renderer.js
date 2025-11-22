@@ -213,41 +213,63 @@ window.addEventListener("DOMContentLoaded", () => {
   }, 2300);
 });
 
-async function checkForUpdate() {
-  try {
-    const res = await fetch("https://server.com/version.json");
-    const info = await res.json();
-
-    const currentVersion = "3.1.0.0"; // phiên bản hiện tại của launcher
-
-    if (info.latest !== currentVersion) {
-      const ok = confirm(`Có bản cập nhật mới ${info.latest}. Tải và cài đặt?`);
-      if (ok) downloadUpdate(info.updateUrl);
-    }
-
-  } catch (err) {
-    console.log("Không kiểm tra được update:", err);
-  }
-}
+// ================= KIỂM TRA UPDATE =================
 
 async function checkForUpdate() {
   try {
     const url = "https://raw.githubusercontent.com/hdao21361/gtv-launcher-updates/main/version.json";
+
     const res = await fetch(url);
     const info = await res.json();
 
+    // Phiên bản hiện tại của app
     const currentVersion = "1.0.0";
 
     if (info.latest !== currentVersion) {
-      const ok = confirm(`Có bản cập nhật mới ${info.latest}. Tải về ngay?`);
-      if (ok) downloadUpdate(info.updateUrl);
+      const ok = confirm(
+        `Có bản cập nhật mới!\n\n` +
+        `Phiên bản hiện tại: ${currentVersion}\n` +
+        `Phiên bản mới: ${info.latest}\n\n` +
+        `Bạn có muốn cập nhật ngay không?`
+      );
+
+      if (ok) {
+        downloadUpdate(info.updateUrl);
+      }
     }
 
   } catch (err) {
-    console.log("Không kiểm tra được update:", err);
+    console.log("Không thể kiểm tra cập nhật:", err);
   }
 }
 
+// ================= TẢI & CÀI UPDATE =================
+
+async function downloadUpdate(url) {
+  try {
+    const result = await window.electronAPI.downloadUpdate(url);
+
+    if (!result.ok) {
+      alert("Lỗi khi tải cập nhật: " + result.msg);
+      return;
+    }
+
+    alert("Cập nhật hoàn tất! Ứng dụng sẽ khởi động lại.");
+
+    // Restart app
+    window.electronAPI.restartApp();
+
+  } catch (err) {
+    alert("Không thể tải cập nhật: " + err.message);
+  }
+}
+
+// Khi app mở → kiểm tra update
 window.addEventListener("DOMContentLoaded", () => {
   checkForUpdate();
 });
+
+
+
+
+
