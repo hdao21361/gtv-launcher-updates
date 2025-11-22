@@ -1,0 +1,46 @@
+name: Auto Build Update
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Set version number
+        id: version
+        run: |
+          DATE=$(date +'%Y%m%d%H%M')
+          echo "version=v$DATE" >> $GITHUB_ENV
+          echo "version=v$DATE"
+    
+      - name: Zip update files
+        run: |
+          zip -r update.zip ./* -x ".git/*" ".github/*"
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.version }}
+          name: Auto Update ${{ env.version }}
+          files: update.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update version.json
+        run: |
+          echo "{ \"latest\": \"${{ env.version }}\", \"updateUrl\": \"https://github.com/${{ github.repository }}/releases/latest/download/update.zip\" }" > version.json
+
+      - name: Commit version.json
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add version.json
+          git commit -m "Update version to ${{ env.version }}"
+          git push
