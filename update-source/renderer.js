@@ -269,6 +269,18 @@ window.addEventListener("DOMContentLoaded", () => {
   checkForUpdate();
 });
 
+document.getElementById("min-btn").onclick = () => {
+  window.electronAPI.minimize();
+};
+
+document.getElementById("close-btn").onclick = () => {
+  window.electronAPI.close();
+};
+
+// Nếu sau này bạn muốn thêm nút ẩn:
+document.getElementById("hide-btn")?.onclick = () => {
+  window.electronAPI.hide();
+};
 
 
 
