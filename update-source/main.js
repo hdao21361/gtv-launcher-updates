@@ -5,6 +5,8 @@ const AdmZip = require("adm-zip");
 const fs = require("fs");
 const https = require("https");
 
+let win;
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1280,
@@ -15,7 +17,9 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, "preload.js")
+      preload: app.isPackaged
+        ? path.join(process.resourcesPath, "preload.js")
+        : path.join(__dirname, "preload.js")
     }
   });
 
@@ -28,14 +32,36 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
 
-// ================== DOWNLOAD UPDATE ==================
+
+/* ======================================================
+    WINDOW CONTROL (QUAN TRỌNG)
+====================================================== */
+
+ipcMain.on("window-minimize", () => {
+  const w = BrowserWindow.getFocusedWindow();
+  if (w) w.minimize();
+});
+
+ipcMain.on("window-hide", () => {
+  const w = BrowserWindow.getFocusedWindow();
+  if (w) w.hide();
+});
+
+ipcMain.on("window-close", () => {
+  const w = BrowserWindow.getFocusedWindow();
+  if (w) w.close();
+});
+
+
+/* ======================================================
+    DOWNLOAD AUTO UPDATE
+====================================================== */
 
 ipcMain.handle("download-update", async (_, url) => {
   return new Promise((resolve) => {
 
-    // Đường dẫn EXE thực sự khi chạy bản build
+    // Khi chạy bản build, đây là thư mục thật
     const appPath = path.dirname(process.execPath);
-
     const updateZipPath = path.join(appPath, "update.zip");
 
     const file = fs.createWriteStream(updateZipPath);
@@ -48,7 +74,7 @@ ipcMain.handle("download-update", async (_, url) => {
           try {
             const zip = new AdmZip(updateZipPath);
 
-            // Giải nén đè vào thư mục app
+            // Giải nén đè toàn bộ file
             zip.extractAllTo(appPath, true);
 
             fs.unlinkSync(updateZipPath);
@@ -67,8 +93,37 @@ ipcMain.handle("download-update", async (_, url) => {
   });
 });
 
-// ================== RESTART APP ==================
+
+/* ======================================================
+    RESTART AFTER UPDATE
+====================================================== */
+
 ipcMain.on("restart-app", () => {
   app.relaunch();
   app.exit();
+});
+
+
+/* ======================================================
+    GAME LAUNCHER IPC
+====================================================== */
+
+ipcMain.handle("select-game-exe", async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    properties: ["openFile"],
+    filters: [{ name: "Executables", extensions: ["exe"] }]
+  });
+  if (canceled) return null;
+  return filePaths[0];
+});
+
+ipcMain.handle("run-game", async (_, exePath) => {
+  if (!exePath) return { ok: false, msg: "Không có đường dẫn game" };
+
+  return new Promise((resolve) => {
+    execFile(exePath, (err) => {
+      if (err) resolve({ ok: false, msg: err.message });
+      else resolve({ ok: true });
+    });
+  });
 });
