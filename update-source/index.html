@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Game Thuần Việt Launcher</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ================= SPLASH LOGO FULL ANIMATION ================= -->
+  <div id="splash-logo">
+    <img id="splash-img" src="assets/logo.webp">
+    <div id="splash-text">GAME THUẦN VIỆT</div>
+
+    <audio id="splash-sound">
+      <source src="assets/sounds/cyber_heavy_chime.wav" type="audio/wav">
+    </audio>
+  </div>
+
+  <!-- ================= TOP BAR ================= -->
+  <div class="topbar">
+    <div class="logo-area">
+      <img src="assets/logo.webp" class="logo-img"/>
+      <span class="logo-text">GAME THUẦNVIỆT</span>
+    </div>
+
+    <div class="top-spacer"></div>
+
+    <div class="top-icons">
+      <img src="assets/bell.png" class="icon" />
+      <img src="assets/user.png" class="icon" />
+    </div>
+
+    <div class="window-btns">
+      <button id="min-btn">−</button>
+      <button id="close-btn">×</button>
+    </div>
+  </div>
+
+  <!-- ================ MAIN LAYOUT ================= -->
+  <div class="main-layout">
+
+    <div class="game-list">
+      <div class="game-grid" id="grid-list"></div>
+    </div>
+
+    <div class="game-detail">
+      <div class="search-area">
+        <input id="search-box" placeholder="LỌC VÀ TÌM GAME (CTRL + F)">
+      </div>
+
+      <div class="detail-box">
+
+        <div class="media-view">
+          <div class="video-box">
+            <div class="youtube-icon">▶</div>
+          </div>
+
+          <div class="thumb-list"></div>
+        </div>
+
+        <div class="tab-bar">
+          <button class="tab active" data-tab="info">THÔNG TIN GAME</button>
+          <button class="tab" data-tab="credits">THỰC HIỆN</button>
+          <button class="tab" data-tab="settings">CÀI ĐẶT</button>
+        </div>
+
+        <div class="tab-content" id="tab-info">
+          <h2 id="game-title">Chọn game để xem thông tin</h2>
+          <p id="game-desc">Dữ liệu chi tiết sẽ hiển thị ở đây.</p>
+        </div>
+
+        <div class="tab-content hidden" id="tab-credits">
+          <p class="credit-title">Dịch Giả</p>
+          <div class="credit-name">Copruri</div>
+
+          <p class="credit-title">Kỹ Thuật</p>
+          <div class="credit-name">Game Thuần Việt</div>
+
+          <p class="credit-title">Đội Ngũ Hỗ Trợ</p>
+          <div class="credit-name">Game Thuần Việt</div>
+        </div>
+
+        <div class="tab-content hidden" id="tab-settings">
+          <p>Đường dẫn Game:</p>
+          <div class="path-row">
+            <input id="game-path" placeholder="Chưa chọn .exe">
+            <button id="btn-pick">Chọn</button>
+          </div>
+
+          <div class="btn-row">
+            <button id="btn-install">CÀI ĐẶT</button>
+            <button id="btn-play">CHƠI →</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer">
+        © Code & Design By MRBOI - V3.1.0.0
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================== VIDEO POPUP ================== -->
+  <div id="video-popup" class="popup hidden">
+    <div class="popup-backdrop"></div>
+
+    <div class="popup-content">
+      <button id="popup-close">×</button>
+      <iframe id="video-frame" src="" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
