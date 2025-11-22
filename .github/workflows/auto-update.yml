@@ -4,7 +4,8 @@ on:
   push:
     paths:
       - "update-source/**"
-    branches: [ "main" ]
+      - "version.json"
+    branches: ["main"]
 
 jobs:
   build:
@@ -14,16 +15,16 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v3
 
-      - name: Zip update files
+      - name: Create ZIP update
         run: |
           cd update-source
           zip -r ../update.zip .
 
       - name: Read version.json
         id: version
-        run: echo "VERSION=$(jq -r .version version.json)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(jq -r .latest version.json)" >> $GITHUB_OUTPUT
 
-      - name: Create Release
+      - name: Upload Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.version.outputs.VERSION }}
