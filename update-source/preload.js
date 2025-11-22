@@ -1,14 +1,17 @@
 import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("electronAPI", {
-  // game launcher API
+  
+  // GAME
   selectGameExe: () => ipcRenderer.invoke("select-game-exe"),
   runGame: (exePath) => ipcRenderer.invoke("run-game", exePath),
 
-  // window control
-  closeApp: () => ipcRenderer.send("close-app"),
+  // WINDOW
+  minimize: () => ipcRenderer.send("window-minimize"),
+  close: () => ipcRenderer.send("window-close"),
+  hide: () => ipcRenderer.send("window-hide"),
 
-  // --- AUTO UPDATE API ---
+  // UPDATE
   downloadUpdate: (url) => ipcRenderer.invoke("download-update", url),
-  restartApp: () => ipcRenderer.send("restart-app")   // 🔥 FIX QUAN TRỌNG
+  restartApp: () => ipcRenderer.send("restart-app"),
 });
