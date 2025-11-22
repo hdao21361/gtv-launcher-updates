@@ -1,0 +1,14 @@
+[
+  {
+    "id": "rogue",
+    "title": "Assassin's Creed Rogue",
+    "cover": "assets/covers/rogue.png",
+    "desc": "Assassin’s Creed Rogue – bản Việt hóa giống giao diện bạn gửi.",
+    "thumbs": [
+      "assets/thumbs/rogue_1.png",
+      "assets/thumbs/rogue_2.png",
+      "assets/thumbs/rogue_3.png"
+    ],
+    "video": "https://www.youtube.com/embed/9O8I8z1sHnU"
+  }
+]
